@@ -26,9 +26,13 @@ class WeatherHomeView extends StatelessWidget {
                     Text(weather.cityName,
                         style: TextStyle(fontSize: 24)),
                     SizedBox(height: 8),
-                    Text(weather.temp, style: TextStyle(fontSize: 40)),
+                    Text(("${weather.temp} °C"), style: TextStyle(fontSize: 40)),
                     SizedBox(height: 8),
-                    Text(weather.feelsLike, style: TextStyle(fontSize: 18)),
+                    Text(("${weather.feelsLike} °C"), style: TextStyle(fontSize: 18)),
+                    SizedBox(height: 8),
+                    Text(("H: ${weather.tempMax} °C"), style: TextStyle(fontSize: 18)),
+                    SizedBox(height: 8),
+                    Text(("L: ${weather.tempMin} °C"), style: TextStyle(fontSize: 18)),
                   ],
                 );
           }

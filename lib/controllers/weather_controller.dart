@@ -13,20 +13,23 @@ class WeatherController extends GetxController {
 
   @override
   void onInit() {
-    loadData();
     super.onInit();
+    debugPrint("WeatherController initialized");
+    loadData();
+    //super.onInit();
   }
 
   Future<void> loadData() async {
     try {
       isLoading.value = true;
       final position = await _locationService.getCurrentPostion();
-      weatherData.value = await _weatherService.fetchWeather(
+      weatherData.value= await _weatherService.fetchWeather(
         position.latitude,
         position.longitude,
       );
     } catch (e) {
-      return print(e);
+      debugPrint("Weather error : $e");
+      rethrow;
     } finally {
       isLoading.value = false;
     }
