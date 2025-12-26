@@ -1,14 +1,11 @@
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-class WeatherModel {
+class CurrentWeatherModel {
 
   final double temp;
   final String cityName;
   final double feelsLike;
   final double tempMax;
   final double tempMin;
-  WeatherModel({
+  CurrentWeatherModel({
     required this.temp,
     required this.cityName,
     required this.feelsLike,
@@ -16,8 +13,8 @@ class WeatherModel {
     required this.tempMin
   });
 
-  factory WeatherModel.fromJson(Map<String, dynamic> json){
-    return WeatherModel(
+  factory CurrentWeatherModel.fromJson(Map<String, dynamic> json){
+    return CurrentWeatherModel(
     temp: (json['main']['temp'] as num).toDouble(),
     cityName: json['name'] as String,
     feelsLike: (json['main']['feels_like'] as num).toDouble(),

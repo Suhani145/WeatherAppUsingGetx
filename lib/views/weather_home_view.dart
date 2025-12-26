@@ -16,23 +16,23 @@ class WeatherHomeView extends StatelessWidget {
               if (weatherController.isLoading.value){
                 return CircularProgressIndicator();
               }
-                final weather = weatherController.weatherData.value;
-                if(weather == null){
+                final currentWeather = weatherController.currentWeatherData.value;
+                if(currentWeather == null){
                   return Text("No Data found");
                 }
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(weather.cityName,
+                    Text(currentWeather.cityName,
                         style: TextStyle(fontSize: 24)),
                     SizedBox(height: 8),
-                    Text(("${weather.temp} °C"), style: TextStyle(fontSize: 40)),
+                    Text(("${currentWeather.temp} °C"), style: TextStyle(fontSize: 40)),
                     SizedBox(height: 8),
-                    Text(("${weather.feelsLike} °C"), style: TextStyle(fontSize: 18)),
+                    Text(("${currentWeather.feelsLike} °C"), style: TextStyle(fontSize: 18)),
                     SizedBox(height: 8),
-                    Text(("H: ${weather.tempMax} °C"), style: TextStyle(fontSize: 18)),
+                    Text(("H: ${currentWeather.tempMax} °C"), style: TextStyle(fontSize: 18)),
                     SizedBox(height: 8),
-                    Text(("L: ${weather.tempMin} °C"), style: TextStyle(fontSize: 18)),
+                    Text(("L: ${currentWeather.tempMin} °C"), style: TextStyle(fontSize: 18)),
                   ],
                 );
           }
