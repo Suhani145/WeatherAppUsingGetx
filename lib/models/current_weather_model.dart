@@ -1,5 +1,4 @@
 class CurrentWeatherModel {
-
   final double temp;
   final String cityName;
   final double feelsLike;
