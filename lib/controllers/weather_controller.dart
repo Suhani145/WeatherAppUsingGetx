@@ -8,8 +8,8 @@ import 'package:weatherappwithgetx/services/weather_service.dart';
 class WeatherController extends GetxController {
   final isLoading = false.obs;
   final currentWeatherData = Rxn<CurrentWeatherModel>();
-  //final hourlyWeatherListData = <HourlyWeatherModel>[].obs;
-  final hourlyWeatherListData = RxList<HourlyWeatherModel>();
+  final hourlyWeatherListData = <HourlyWeatherModel>[].obs;
+  //final hourlyWeatherListData = RxList<HourlyWeatherModel>();
 
   final LocationService _locationService = LocationService();
   final WeatherService _weatherService = WeatherService();
