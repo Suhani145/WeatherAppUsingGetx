@@ -13,31 +13,44 @@ class WeatherHomeView extends StatelessWidget {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final WeatherController weatherController = Get.find<WeatherController>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Current Weather')),
+      body: Obx(() {
+        if (weatherController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-      body: Expanded(
-        child: Obx(() {
-          if (weatherController.isLoading.value) {
-            return CircularProgressIndicator();
-          }
-          //current weather ui
-          final currentWeather = weatherController.currentWeatherData.value;
-          final hourlyData = weatherController.hourlyWeatherListData..take(8).toList();
-          if (currentWeather == null ) {
-            return Text("No Data found");
-          }
-          // && weatherController.hourlyWeatherListData.isEmpty
-          return Column(
-            children: [
-              CurrentWeatherUI(screenWidth: screenWidth, screenHeight: screenHeight, currentWeather: currentWeather),
-              HourlyWeatherUI(hourlyData: hourlyData, screenWidth: screenWidth, screenHeight: screenHeight)
+        final currentWeather = weatherController.currentWeatherData.value;
+        if (currentWeather == null &&
+            weatherController.hourlyWeatherListData.isEmpty) {
+          return const Center(child: Text("No Data found"));
+        }
 
-            ],
-          );
-          //hourly card ui
-        }),
-      ),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                CurrentWeatherUI(
+                  screenWidth: screenWidth,
+                  screenHeight: screenHeight,
+                  currentWeather: currentWeather,
+                ),
+
+                Expanded(
+                  child: HourlyWeatherUI(
+                    hourlyData: weatherController.hourlyWeatherListData,
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                    maxHeight: constraints.maxHeight * 0.22,
+                    currentWeather: currentWeather,
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      }),
     );
   }
 }
@@ -48,53 +61,87 @@ class HourlyWeatherUI extends StatelessWidget {
     required this.hourlyData,
     required this.screenWidth,
     required this.screenHeight,
+    required this.maxHeight,
+    required this.currentWeather,
   });
 
   final RxList<HourlyWeatherModel> hourlyData;
   final double screenWidth;
   final double screenHeight;
+  final double maxHeight;
+  final CurrentWeatherModel? currentWeather;
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: hourlyData.length,
-      itemBuilder: (context, index){
-        final hour = hourlyData[index];
-        return SizedBox(
-          width: screenWidth * 0.9,
-          height: screenHeight * 0.24,
-          child: Card(
-              elevation: 0,
-              child: Column(
-                children: [
-                  Text(
-                    _parseToTime(hour.dtTxt),
-                    style: TextStyle(
-                        fontSize: 8
-                    ) ,
-                  ),
+    final limitedData = hourlyData.take(8).toList();
 
-                  SizedBox(height: 2),
-
-                  Image.network("https://openweathermap.org/img/wn/${hour.icon}@2x.png",
-                  width: 18,
-                  height: 18,
-                    fit: BoxFit.cover
-                  ),
-                  SizedBox(height: 2),
-                  Text("${hour.hourlyTemp}",
-                    style: TextStyle(
-                        fontSize: 10
-                    ) ,
-                  ),
-
-                ],
-              )
-
-          ),
-        );
-      },
-
+    return Container(
+      height: maxHeight,
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 20),
+            Text(
+              " Today's Feel like temperature: ${currentWeather!.feelsLike.toStringAsFixed(1)}°C",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Hourly Forecast',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Divider(),
+            const SizedBox(height: 8),
+            Expanded(
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: limitedData.length,
+                itemBuilder: (context, index) {
+                  final hour = limitedData[index];
+                  return Container(
+                    width: screenWidth * 0.20,
+                    height: screenHeight * 0.20,
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Text(
+                              _parseToTime(hour.dtTxt),
+                              style: const TextStyle(
+                                fontSize: 8,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Image.network(
+                              "https://openweathermap.org/img/wn/${hour.icon}@2x.png",
+                              width: 18,
+                              height: 18,
+                              fit: BoxFit.contain,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              "${hour.hourlyTemp.toStringAsFixed(0)}°C",
+                              style: const TextStyle(fontSize: 10),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -115,61 +162,64 @@ class CurrentWeatherUI extends StatelessWidget {
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
-      child: SizedBox(
-        width: screenWidth * 0.75,
-        height: screenHeight * 0.3,
+      child: Container(
+        width: screenWidth * 0.70,
+        height: screenHeight * 0.22,
+        padding: const EdgeInsets.all(16.0),
         child: Card(
           elevation: 0,
           shadowColor: Colors.transparent,
-          margin: EdgeInsets.all(10),
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    ("${currentWeather!.temp} °C"),
-                    style: TextStyle(fontSize: 40),
-                  ),
-                  SizedBox(width: 8),
-                  Column(
-                    children: [
-                      SizedBox(height: 8),
-                      Text(
-                        ("H: ${currentWeather!.tempMax} °C"),
-                        style: TextStyle(fontSize: 18),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "${currentWeather!.temp.toStringAsFixed(1)}°C",
+                      style: const TextStyle(
+                        fontSize: 45,
+                        fontWeight: FontWeight.bold,
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        ("L: ${currentWeather!.tempMin} °C"),
-                        style: TextStyle(fontSize: 18),
+                    ),
+                    const SizedBox(width: 10),
+                    Column(
+                      children: [
+                        Text(
+                          "H: ${currentWeather!.tempMax.toStringAsFixed(1)}°C",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        Text(
+                          "L: ${currentWeather!.tempMin.toStringAsFixed(1)}°C",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Icon(Icons.location_on, size: 24),
+                    const SizedBox(width: 6),
+                    Text(
+                      currentWeather!.cityName,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                ],
-              ),
-              SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Icon(Icons.location_pin),
-                  SizedBox(height: 10),
-                  Text(
-                    currentWeather!.cityName,
-                    style: TextStyle(fontSize: 24),
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              Text(
-                ("${currentWeather!.feelsLike} °C"),
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -177,9 +227,8 @@ class CurrentWeatherUI extends StatelessWidget {
   }
 }
 
-String _parseToTime(String dtTxt){
+String _parseToTime(String dtTxt) {
   DateTime dateTime = DateTime.parse(dtTxt);
-  String formattedTime = DateFormat('HH:MM').format(dateTime);
+  String formattedTime = DateFormat('HH:mm').format(dateTime);
   return formattedTime;
-
 }

@@ -30,8 +30,10 @@ class WeatherController extends GetxController {
         position.latitude,
         position.longitude,
       );
-      final hourlyData = await _weatherService.fetchHourlyWeather(position.latitude,
-        position.longitude,);
+      final hourlyData = await _weatherService.fetchHourlyWeather(
+        position.latitude,
+        position.longitude,
+      );
       hourlyWeatherListData.assignAll(hourlyData);
     } catch (e) {
       debugPrint("Weather error : $e");
