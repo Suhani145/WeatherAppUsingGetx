@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       initialBinding: WeatherBinding(),
+      debugShowCheckedModeBanner: false,
       home: WeatherHomeView(),
     );
   }
