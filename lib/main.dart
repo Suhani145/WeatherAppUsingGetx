@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 import 'application.dart';
-
+import 'package:flutter/services.dart';
 void main() {
-  runApp( MyApp());
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    )
+  );
+  runApp(
+      MyApp());
 }
 
 
