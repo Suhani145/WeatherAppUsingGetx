@@ -13,6 +13,7 @@ class WeatherHomeView extends StatelessWidget {
     final screenHeight = MediaQuery.sizeOf(context).height;
     final WeatherController weatherController = Get.find<WeatherController>();
 
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -53,7 +54,8 @@ class WeatherHomeView extends StatelessWidget {
                         currentWeather: currentWeather,
                       ),
                     ),
-                    SizedBox(height: 150),
+
+                    SizedBox(height: 100),
                     Center(
                       child: Text(
                         'Tomorrow\'s temperature: ',

@@ -1,15 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:weatherappwithgetx/models/current_weather_model.dart';
 import 'package:weatherappwithgetx/models/hourly_weather_model.dart';
 import 'package:weatherappwithgetx/services/location_sevice.dart';
 import 'package:weatherappwithgetx/services/weather_service.dart';
+
+import '../models/daily_weather_model.dart';
 
 class WeatherController extends GetxController {
   final isLoading = false.obs;
   final currentWeatherData = Rxn<CurrentWeatherModel>();
   final hourlyWeatherListData = <HourlyWeatherModel>[].obs;
   //final hourlyWeatherListData = RxList<HourlyWeatherModel>();
+  final dailyWeatherListData = <DailyWeatherModel>[].obs;
 
   final LocationService _locationService = LocationService();
   final WeatherService _weatherService = WeatherService();
@@ -35,6 +41,14 @@ class WeatherController extends GetxController {
         position.longitude,
       );
       hourlyWeatherListData.assignAll(hourlyData);
+
+      final dailyData = await _weatherService.fetchDailyWeather(
+        position.latitude,
+        position.longitude,
+      );
+      dailyWeatherListData.assignAll(dailyData);
+      debugPrint("Daily Weather:  $dailyWeatherListData");
+
     } catch (e) {
       debugPrint("Weather error : $e");
       rethrow;
@@ -42,4 +56,10 @@ class WeatherController extends GetxController {
       isLoading.value = false;
     }
   }
+}
+
+String parseToDay(String dtTxt) {
+  DateTime dateTime = DateTime.parse(dtTxt);
+  String formattedTime = DateFormat('EEE').format(dateTime);
+  return formattedTime;
 }
