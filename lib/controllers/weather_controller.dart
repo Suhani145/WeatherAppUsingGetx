@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -48,6 +46,7 @@ class WeatherController extends GetxController {
       );
       dailyWeatherListData.assignAll(dailyData);
       debugPrint("Daily Weather:  $dailyWeatherListData");
+      debugPrint("Hourly Weather:  $hourlyWeatherListData");
 
     } catch (e) {
       debugPrint("Weather error : $e");

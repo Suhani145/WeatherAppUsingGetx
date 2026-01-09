@@ -4,21 +4,25 @@ class CurrentWeatherModel {
   final double feelsLike;
   final double tempMax;
   final double tempMin;
+  final String condition;
+
   CurrentWeatherModel({
     required this.temp,
     required this.cityName,
     required this.feelsLike,
     required this.tempMax,
-    required this.tempMin
+    required this.tempMin,
+    required this.condition,
   });
 
-  factory CurrentWeatherModel.fromJson(Map<String, dynamic> json){
+  factory CurrentWeatherModel.fromJson(Map<String, dynamic> json) {
     return CurrentWeatherModel(
-    temp: (json['main']['temp'] as num).toDouble(),
-    cityName: json['name'] as String,
-    feelsLike: (json['main']['feels_like'] as num).toDouble(),
-    tempMax: (json['main']['temp_max'] as num).toDouble(),
-    tempMin: (json['main']['temp_min'] as num).toDouble(),
-  );
+      temp: (json['main']['temp'] as num).toDouble(),
+      cityName: json['name'] as String,
+      feelsLike: (json['main']['feels_like'] as num).toDouble(),
+      tempMax: (json['main']['temp_max'] as num).toDouble(),
+      tempMin: (json['main']['temp_min'] as num).toDouble(),
+      condition: json['weather'][0]['main'] as String,
+    );
   }
 }

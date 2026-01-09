@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class HourlyWeatherModel {
   String dtTxt;
   double hourlyTemp;

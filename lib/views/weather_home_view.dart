@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:weatherappwithgetx/controllers/weather_controller.dart';
+import 'package:weatherappwithgetx/models/daily_weather_model.dart';
+import 'package:weatherappwithgetx/views/weather_background.dart';
 import 'current_weather_ui.dart';
+import 'daily_weather_ui.dart';
 import 'hourly_weather_ui.dart';
 
 class WeatherHomeView extends StatelessWidget {
@@ -12,19 +16,20 @@ class WeatherHomeView extends StatelessWidget {
     final screenWidth = MediaQuery.sizeOf(context).width;
     final screenHeight = MediaQuery.sizeOf(context).height;
     final WeatherController weatherController = Get.find<WeatherController>();
-
+    final dailyData = weatherController.dailyWeatherListData;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        elevation: 0,
-          backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(elevation: 0, backgroundColor: Colors.transparent),
       body: Stack(
         children: [
-          Image.asset("assets/images/morning.png",
-          width: double.infinity,
-          height: double.infinity,),
+          Image.asset(
+            WeatherBackground.backGroundImage(
+              weatherController.currentWeatherData.value?.condition ?? 'clear',
+            ),
+            width: double.infinity,
+            height: double.infinity,
+          ),
           Obx(() {
             if (weatherController.isLoading.value) {
               return const Center(child: CircularProgressIndicator());
@@ -35,36 +40,34 @@ class WeatherHomeView extends StatelessWidget {
               return const Center(child: Text("No Data found"));
             }
 
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                return Column(
-                  children: [
-                    CurrentWeatherUI(
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  CurrentWeatherUI(
+                    screenWidth: screenWidth,
+                    screenHeight: screenHeight,
+                    currentWeather: currentWeather,
+                  ),
+                  SizedBox(height: 200),
+                  SizedBox(
+                    height: screenHeight * 0.28,
+                    child: HourlyWeatherUI(
+                      hourlyData: weatherController.hourlyWeatherListData,
                       screenWidth: screenWidth,
                       screenHeight: screenHeight,
+                      //maxHeight: constraints.maxHeight * 0.12,
                       currentWeather: currentWeather,
                     ),
-                    SizedBox(height: 200),
-                    Expanded(
-                      child: HourlyWeatherUI(
-                        hourlyData: weatherController.hourlyWeatherListData,
-                        screenWidth: screenWidth,
-                        screenHeight: screenHeight,
-                        maxHeight: constraints.maxHeight * 0.12,
-                        currentWeather: currentWeather,
-                      ),
-                    ),
+                  ),
 
-                    SizedBox(height: 100),
-                    Center(
-                      child: Text(
-                        'Tomorrow\'s temperature: ',
-                        style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                );
-              },
+                  SizedBox(height: 10),
+
+                  DailyWeatherUI(
+                    screenHeight: screenHeight,
+                    dailyData: dailyData,
+                  ),
+                ],
+              ),
             );
           }),
         ],
@@ -72,9 +75,3 @@ class WeatherHomeView extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-

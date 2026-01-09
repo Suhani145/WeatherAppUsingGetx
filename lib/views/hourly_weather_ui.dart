@@ -10,14 +10,15 @@ class HourlyWeatherUI extends StatelessWidget {
     required this.hourlyData,
     required this.screenWidth,
     required this.screenHeight,
-    required this.maxHeight,
+    //required this.maxHeight,
     required this.currentWeather,
   });
 
   final RxList<HourlyWeatherModel> hourlyData;
   final double screenWidth;
   final double screenHeight;
-  final double maxHeight;
+
+  //final double maxHeight;
   final CurrentWeatherModel? currentWeather;
 
   @override
@@ -28,12 +29,12 @@ class HourlyWeatherUI extends StatelessWidget {
     }
 
     return Container(
-      height: maxHeight,
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               "Today's Feel like temperature: ${currentWeather!.feelsLike.toStringAsFixed(1)}°C",
@@ -44,9 +45,10 @@ class HourlyWeatherUI extends StatelessWidget {
               'Hourly Forecast',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            Divider(thickness: 1,),
+            Divider(thickness: 1),
             const SizedBox(height: 8),
-            Expanded(
+            SizedBox(
+              height: screenHeight * 0.12,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: limitedData.length,
@@ -54,8 +56,6 @@ class HourlyWeatherUI extends StatelessWidget {
                   final hour = limitedData[index];
                   return SizedBox(
                     width: screenWidth * 0.20,
-                    //height: screenHeight * 0.20,
-
                     child: Card(
                       margin: const EdgeInsets.symmetric(horizontal: 8.0),
                       elevation: 0,

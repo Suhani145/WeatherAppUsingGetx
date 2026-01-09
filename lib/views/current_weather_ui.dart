@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/current_weather_model.dart';
 
 class CurrentWeatherUI extends StatelessWidget {
@@ -39,7 +38,7 @@ class CurrentWeatherUI extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -50,7 +49,7 @@ class CurrentWeatherUI extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                                color: Colors.white
+                              color: Colors.white,
                             ),
                           ),
                           Text(
@@ -58,7 +57,7 @@ class CurrentWeatherUI extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w400,
-                                color: Colors.white
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -68,14 +67,18 @@ class CurrentWeatherUI extends StatelessWidget {
                   const SizedBox(height: 10),
                   Row(
                     children: [
-                      const Icon(Icons.location_on, size: 24, color: Colors.white),
+                      const Icon(
+                        Icons.location_on,
+                        size: 24,
+                        color: Colors.white,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         currentWeather!.cityName,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                            color: Colors.white
+                          color: Colors.white,
                         ),
                       ),
                     ],
